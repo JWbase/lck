@@ -143,25 +143,25 @@ const DraftSimulator = () => {
   };
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold text-center">
+    <Card className="w-full max-w-full overflow-hidden">
+      <CardHeader className="p-2 md:p-4">
+        <CardTitle className="text-lg md:text-xl lg:text-2xl font-bold text-center">
           LCK Draft Simulator - {isDraftComplete ? "Draft Complete!" : `Round ${round} (Pick ${currentPick % 10 || 10}/10)`}
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-2 md:p-4 lg:p-6">
         {isDraftComplete ? (
-          <div className="space-y-6">
-            <h2 className="text-xl font-bold">최종 로스터</h2>
-            <div className="grid grid-cols-5 gap-4">
+          <div className="space-y-4 md:space-y-6">
+            <h2 className="text-lg md:text-xl font-bold">최종 로스터</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-2 md:gap-4">
               {getFinalRoster().map(({ role, captain, players }) => (
-                <div key={role} className="border rounded-lg p-4">
-                  <h3 className="font-bold text-lg mb-2">{role}</h3>
-                  <div className="space-y-2">
-                    <p className="font-semibold text-blue-600">팀장: {captain}</p>
-                    <p className="font-medium">선수:</p>
+                <div key={role} className="border rounded-lg p-2 md:p-4">
+                  <h3 className="font-bold text-base md:text-lg mb-2">{role}</h3>
+                  <div className="space-y-1 md:space-y-2">
+                    <p className="font-semibold text-blue-600 text-sm md:text-base">팀장: {captain}</p>
+                    <p className="font-medium text-sm md:text-base">선수:</p>
                     {players.map((player, idx) => (
-                      <p key={idx} className="text-sm">
+                      <p key={idx} className="text-xs md:text-sm">
                         {player.name} ({player.team})
                       </p>
                     ))}
@@ -171,36 +171,40 @@ const DraftSimulator = () => {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-2 md:gap-4">
             {Object.entries(TEAM_CAPTAINS).map(([role, captain]) => (
-              <div key={role} className="border rounded-lg p-4">
-                <h3 className="font-bold text-lg mb-2">{role}</h3>
-                <p className="font-semibold text-blue-600 mb-2">팀장: {captain.name}</p>
-                <div className="mt-4">
-                  <h4 className="font-medium mb-2">선택된 선수 ({selectedPlayers[role].length}/4):</h4>
+              <div key={role} className="border rounded-lg p-2 md:p-4">
+                <h3 className="font-bold text-base md:text-lg mb-2">{role}</h3>
+                <p className="font-semibold text-blue-600 text-sm md:text-base mb-2">팀장: {captain.name}</p>
+                <div className="mt-2 md:mt-4">
+                  <h4 className="font-medium text-sm md:text-base mb-1 md:mb-2">
+                    선택된 선수 ({selectedPlayers[role].length}/4):
+                  </h4>
                   {selectedPlayers[role].map(({ name, team, pick, round }) => (
-                    <p key={name} className="text-sm">
+                    <p key={name} className="text-xs md:text-sm">
                       R{round}-{pick % 10 || 10}. {name} ({team})
                     </p>
                   ))}
                 </div>
-                <div className="mt-4">
-                  <h4 className="font-medium mb-2">가능한 선수:</h4>
-                  {PLAYERS[role]
-                    .filter(player => !selectedPlayers[role].some(selected => selected.name === player.name))
-                    .map(player => (
-                      <button
-                        key={player.name}
-                        onClick={() => handlePlayerSelect(role, player)}
-                        disabled={getCurrentRole() !== role || !isPlayerSelectable(role, player)}
-                        className={`w-full text-left px-2 py-1 rounded text-sm mb-1 
-                          ${getCurrentRole() === role && isPlayerSelectable(role, player)
-                            ? 'bg-green-500 hover:bg-green-600 text-white' 
-                            : 'bg-gray-200 text-gray-700'}`}
-                      >
-                        {player.name} ({player.team})
-                      </button>
-                    ))}
+                <div className="mt-2 md:mt-4">
+                  <h4 className="font-medium text-sm md:text-base mb-1 md:mb-2">가능한 선수:</h4>
+                  <div className="space-y-1">
+                    {PLAYERS[role]
+                      .filter(player => !selectedPlayers[role].some(selected => selected.name === player.name))
+                      .map(player => (
+                        <button
+                          key={player.name}
+                          onClick={() => handlePlayerSelect(role, player)}
+                          disabled={getCurrentRole() !== role || !isPlayerSelectable(role, player)}
+                          className={`w-full text-left px-2 py-1 rounded text-xs md:text-sm
+                            ${getCurrentRole() === role && isPlayerSelectable(role, player)
+                              ? 'bg-green-500 hover:bg-green-600 text-white' 
+                              : 'bg-gray-200 text-gray-700'}`}
+                        >
+                          {player.name} ({player.team})
+                        </button>
+                      ))}
+                  </div>
                 </div>
               </div>
             ))}
